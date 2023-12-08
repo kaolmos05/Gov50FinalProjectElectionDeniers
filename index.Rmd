@@ -8,7 +8,6 @@ output:
 ---
 
 
-
 ## Project thoughts
 
 Research Question: What is the relationship between a Republican candidate's stance on the 2020 election and their electoral success? In other words, consider how a Republican candidate's denial of the 2020 election results relates to their electoral success. 
