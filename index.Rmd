@@ -68,7 +68,7 @@ election_data <-
 election_data
 ```
 ```{r Hypothesis test}
-#Is there a statistically significant difference in the proportion of Republican candidates who fully denied the results of the 2020 election between states with liberal partisan leaning and states with conservative partisan leanings. 
+#Is there a statistically significant difference in the proportion of Republican candidates who denied the results of the 2020 election and their electoral success in the 2022 general election. 
 
 election_prop <- election_data |>
   mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
@@ -124,9 +124,9 @@ election_data |>
 
 contingency_table <- table(election_data$Stance, election_data$Elected_or_not)
 
-contingency_table
+knitr::kable(contingency_table)
 
-election_data |>
+mosaic_chart <- election_data |>
   mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
   ggplot(aes(x = Elected_or_not, fill = stance)) +
   geom_bar(position = "fill") +
