@@ -67,109 +67,7 @@ election_data <-
 
 election_data
 ```
-```{r eval = FALSE}
-graph1 <- election_data |>
-  ggplot(aes(x = State_partisan_lean, fill = Stance)) +
-  geom_histogram()
-
-graph1
-
-# Create a boxplot using ggplot and dplyr
-election_data |>
-  filter(Stance == "Fully denied") |>
-  ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
-  geom_boxplot() +
-  labs(title = "State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
-
-
-# Create a contingency table
-contingency_table <- table(election_data$Stance, election_data$Elected_or_not)
-
-# Visualize using a stacked bar plot
-barplot(contingency_table, beside = TRUE, legend = TRUE, col = c("red", "green"))
-
-boxplot(election_data$State_partisan_lean ~ election_data$Elected_or_not, col = c("red", "green"), ylab = "State Partisan Lean")
-
-
-# Create a boxplot using ggplot and dplyr
-election_data %>%
-  ggplot(aes(x = Stance, y = State_partisan_lean, fill = Stance)) +
-  geom_boxplot() +
-  labs(title = "Impact of State Partisan Lean on Stance", x = "Stance", y = "State Partisan Lean")
-
-# Create a mosaic plot using ggplot2 and dplyr
-election_data %>%
-  ggplot(aes(x = Elected_or_not, fill = President)) +
-  geom_bar(position = "fill") +
-  coord_flip() +
-  labs(title = "Election Outcome by State Vote", y = "Proportion", fill = "President")
-
-# Fit a linear regression model
-lm_model <- lm(State_partisan_lean ~ Stance + President, data = election_data)
-
-
-```
-x <- election_data |>
-  filter(Stance == "Fully accepted") |>
-  mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
-         elected = if_else(Elected_or_not == "Elected", 1, 0)) |>
-  group_by(partisan_leaning) |>
-  summarise(elected_prop = mean(elected))
-x
-
-result <- inner_join(x, y, by = "partisan_leaning") |>
-  mutate(diff_prop = elected_prop.x - elected_prop.y) |>
-  select(partisan_leaning, diff_prop)
-
-# Print the result
-print(result)
-```{r eval = FALSE}
-election_data |>
-  filter(President == "Trump")
-```
-s <- election_data |>
-  slice
-  mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
-         elected = if_else(Elected_or_not == "Elected", 1, 0)) |>
-  group_by(President) |>
-  summarise(elected_prop = mean(elected))
-s
-
-result <- inner_join(y, s, by = "President") |>
-  mutate(diff_prop = elected_prop.x - elected_prop.y) |>
-  select(President, diff_prop)
-result
-
-boot_dist_infer <- election_data |>
-  mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
-         elected = if_else(Elected_or_not == "Elected", 1, 0)) |>
-  specify(response = elected) |>
-  generate(reps = 1000, type = "bootstrap") |>
-  calculate(stat = "mean")
-boot_dist_infer
-visualize(boot_dist_infer)
-
-
-
-
-
-null_dist <- social |>
-  specify(elected ~ stance, success = "1") |>
-  hypothesize(null = "independence") |>
-  generate(reps = 1000, type = "permute") |>
-  calculate(stat = "diff in props", order = c("denied", "accepted"))
-
-null_dist |>
-  visualize()
-
-ate_pval <- null_dist |>
-    get_p_value(obs_stat = est_ate, direction = "both")
-ate_pval
-
-est_ate |>
-  visualize() + shade_p_value(obs_stat = est_ate, direction = "both")
-
-```{r}
+```{r Hypothesis test}
 #Is there a statistically significant difference in the proportion of Republican candidates who fully denied the results of the 2020 election between states with liberal partisan leaning and states with conservative partisan leanings. 
 
 election_prop <- election_data |>
@@ -213,6 +111,34 @@ ate_pval <- null_dist |>
   get_p_value(obs_stat = election_data_modified, direction = "both")
 ate_pval
 ```
+```{r Graph Visualizations}
+
+# Create a boxplot using ggplot and dplyr
+election_data |>
+  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+  filter(stance == "denied") |>
+  ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
+  geom_boxplot() +
+  labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
+
+
+contingency_table <- table(election_data$Stance, election_data$Elected_or_not)
+
+contingency_table
+
+election_data |>
+  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+  ggplot(aes(x = Elected_or_not, fill = stance)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  labs(title = "Electoral Success by Stance", 
+       x = "Electoral Success",
+       y = "Proportion", 
+       fill = "Stance")
+
+```
+```
+
 
 
 
