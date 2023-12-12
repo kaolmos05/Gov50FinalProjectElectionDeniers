@@ -6,7 +6,27 @@ output:
   distill::distill_article:
     self_contained: false
 ---
+The final report will include the following sections: (1) an introduction where you introduce the research question and hypothesis and briefly describe why it is interesting; (2) a data section that briefly describes the data source, describes how the key dependent and independent variables are measured (e.g., a survey, statistical model, or expert coding), and also produces a plot that summarizes the dependent variable; (3) a results section that contains a scatterplot, barplot, or boxplot of the main relationship of interest and output for the main regression of interest; and (4) a brief (one paragraph) concluding section that summarizes your results, assesses the extent to which you find support for your hypothesis, describes limitations of your analysis and threats to inference, and states how your analysis could be improved (e.g., improved data that would be useful to collect).
 
+For the data section, you should note if your research design is cross-sectional (most projects will be of this type) or one of the other designs we discussed (randomized experiment, before-and-after, differences-in-differences). For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.
+
+Here is a rubric for the the core components of the final project:
+
+Introduction: describe the research question and main hypothesis; describe why it is important. (1-2 paragraphs) (2pts)
+Data section: 2-3 paragraphs + plot visualizing main outcome of interest. (3pts)
+Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
+Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)
+To earn full credit on the visualizations and regression output, they should use informative labels and names and have a small number of digits presented. Tables should use kable or modelsummary to format output nicely. Generally speaking, the final report should mostly be readable by a person who hasn’t taken Gov 50.
+
+That adds up to 15 out of 16 points. We reserve one point for students going above and beyond the basic requirements. This “great work” point can be earned in many ways:
+
+Using different datasets that must be merged before use.
+Presenting additional analyses that investigate the relationship further in terms of possible confounders or alternative explanations.
+Aesthetically pleasing visualizations (above and beyond what we learned in class)
+Maps
+Use of other packages not reviewed in class (excluding those for importing data)
+Clean code (i.e., proper indentation, naming chunks)
+No raw R output (all “prints” using kable or kable like functions)
 
 ## Project thoughts
 
@@ -47,16 +67,16 @@ Conclusion section: 1 paragraph (i) summarizing results and assessing the extent
 
 [finish later]
 
-```{r}
+```{r Loading Packages and Data Source(CSV File)}
 library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
 library(infer)
-
-election_deniers <- read_csv("~/Downloads/fivethirtyeight_election_deniers_Gov50_final.csv")
+library(pscl)
+election_deniers <- read_csv("~/Github Gov 50/FinalProjectGOV50/Gov50FinalProjectElectionDeniers/fivethirtyeight_election_deniers_Gov50_final.csv")
 ```
-```{r Making the data set neater by selecting and renaming variables}
+```{r Making the Data Set Neater by Selecting and Renaming Variables}
 election_data <- election_deniers |>
   select(Stance, `Dem or Rep State`, `Won or Lost their Race`, `The FiveThirtyEight partisan lean of every state`) 
 
@@ -67,56 +87,62 @@ election_data <-
 
 election_data
 ```
-```{r Hypothesis test}
-#Is there a statistically significant difference in the proportion of Republican candidates who denied the results of the 2020 election and their electoral success in the 2022 general election. 
 
+I ran a 2-sample permutation test to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied or raised questions, essentially did not accept the results fully, were categorized as having denied the results of the 2020 election. My two different samples are Republican candidates who denied the results of the 2020 election and Republican candidates who accepted the results of the 2020 election. The proportions I'm comparing are the proportion of candidates who won their race. The null hypothesis is that there is no difference in the proportion of Republican candidates who are elected based on their stance on the 2020 election. The permutation test provided a p-value of approximately 0, therefore, at alpha = 0.05 level, the difference in proportion of elected Republican candidates is different. I can reject the null hypothesis that there is no difference in the proportion of Republican candidates who were elected based on whether or not they denied the results of the 2020 election.
+
+```{r Hypothesis Test (2 Sample Permutation Test with Infer)}
 election_prop <- election_data |>
   mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
          elected = if_else(Elected_or_not == "Elected", 1, 0),
-         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "Denied", "Accepted")) |>
   group_by(stance) |>
   summarise(elected_prop = mean(elected))
 
-election_prop
+knitr::kable(election_prop, col.names = c("Stance", "Prop. of Rep. Candidates Elected"))
 
 election_data_modified <- election_data |>
   mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
          elected = if_else(Elected_or_not == "Elected", "1", "0"),
-         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "Denied", "Accepted")) |>
   specify(elected ~ stance, success = "1") |>
-  calculate(stat = "diff in props", order = c("denied", "accepted")) 
+  calculate(stat = "diff in props", order = c("Denied", "Accepted")) 
 
-election_data_modified
+knitr::kable(election_data_modified, col.names = c("Difference in Proportion of Electeds by Stance (Denied prop. - Accepted Prop.)"))
 
 set_hypothesis <- election_data |>
   mutate(elected = if_else(Elected_or_not == "Elected", "1", "0"),
-         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "Denied", "Accepted")) |>
   specify(elected ~ stance, success = "1") |> 
   hypothesize(null = "independence") 
   
-set_hypothesis
 
 null_dist <- set_hypothesis |>
   specify(elected ~ stance, success = "1") |> 
   hypothesize(null = "independence") |>
   generate(reps = 1000, type = "permute") |>
-  calculate(stat = "diff in props", order = c("denied", "accepted"))
-
-null_dist
+  calculate(stat = "diff in props", order = c("Denied", "Accepted"))
 
 null_dist |>
-  visualize()
+  visualize() +
+  labs(
+    x = "Diff. in Prop.",
+    y = "Count",
+    title = "Simulation-Based Null Distribution of Diff. in Prop."
+  )
 
-ate_pval <- null_dist |>
+pval <- null_dist |>
   get_p_value(obs_stat = election_data_modified, direction = "both")
-ate_pval
+
+knitr::kable(pval, col.names = "P-value")
 ```
+
 ```{r Graph Visualizations}
+
 
 # Create a boxplot using ggplot and dplyr
 election_data |>
-  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
-  filter(stance == "denied") |>
+  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "Denied", "Accepted")) |>
+  filter(stance == "Denied") |>
   ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
   geom_boxplot() +
   labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
@@ -127,7 +153,7 @@ contingency_table <- table(election_data$Stance, election_data$Elected_or_not)
 knitr::kable(contingency_table)
 
 mosaic_chart <- election_data |>
-  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "denied", "accepted")) |>
+  mutate(stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", "Denied", "Accepted")) |>
   ggplot(aes(x = Elected_or_not, fill = stance)) +
   geom_bar(position = "fill") +
   coord_flip() +
@@ -135,8 +161,28 @@ mosaic_chart <- election_data |>
        x = "Electoral Success",
        y = "Proportion", 
        fill = "Stance")
-
+mosaic_chart
 ```
+```{r}
+regression <- election_data |>
+  mutate(elected = if_else(Elected_or_not == "Elected", 1, 0),
+         stance = if_else(Stance == "Fully denied" | Stance == "Raised questions", 0, 1),
+         state = election_deniers$State,
+         incumbency = election_deniers$Incumbent,
+         office = election_deniers$Office,
+         president = election_deniers$`Dem or Rep State`,
+         )
+
+fit <- glm(elected ~ stance + President + incumbency + state + office , regression, family = "binomial") 
+s <- summary(fit)$coefficients
+s
+modelsummary::modelsummary(fit)
+fit
+library(pscl)
+pscl::pR2(fit)["McFadden"]
+
+ggplot(regression, mapping = aes(x = stance, y = elected))  + geom_smooth(method = "lm")
+
 ```
 
 
