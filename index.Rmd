@@ -58,9 +58,8 @@ mosaic_chart
 ```
 The results from the mosaic bar charts show a difference in the proportion of Republican election deniers candidates that were elected and not elected. In the elected category, there is a higher proportion of election deniers than in the not elected category which raises concerning signs. 
 
-I ran a 2-sample permutation test to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results. 
+I ran a 2-sample permutation test in the chunck below to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results. 
 
-My two different samples are Republican candidates who denied the results of the 2020 election and Republican candidates who accepted the results of the 2020 election. The proportions I'm comparing are the proportion of candidates who won their race. The null hypothesis is that there is no difference in the proportion of Republican candidates who are elected based on their stance on the 2020 election. The permutation test provided a p-value of approximately 0, therefore, at alpha = 0.05 level, the difference in proportion of elected Republican candidates is different. I can reject the null hypothesis that there is no difference in the proportion of Republican candidates who were elected based on whether or not they denied the results of the 2020 election.
 
 ```{r Hypothesis Test (2 Sample Permutation Test with Infer)}
 election_prop <- election_data |>
@@ -108,25 +107,28 @@ pval <- null_dist |>
 knitr::kable(pval, col.names = "P-value")
 ```
 
+In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. Due to the fact that my dependent variable is not continuous but rather binary I could not conduct a linear regression on this data so I did some research and found that a logistic regression model would be better suited for my data. I used to this website (https://www.statology.org/logistic-regression-in-r/) to inform the code I have written in the chunk below. To control for other independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model. 
+
 ```{r Regression}
 regression <- election_data |>
   mutate(elected = if_else(Elected_or_not == "Elected", 1, 0),
-         stance = if_else(Stance == "Fully denied", 0, 1),
+         stance = if_else(Stance == "Fully denied", 1, 0),
          state = election_deniers$State,
          incumbency = election_deniers$Incumbent,
          office = election_deniers$Office,
          president = election_deniers$`Dem or Rep State`,
          )
 
-fit <- glm(elected ~ stance + President + incumbency + state + office , regression, family = "binomial") 
-s <- summary(fit)$coefficients
-s
-modelsummary::modelsummary(fit)
-fit
-library(pscl)
-pscl::pR2(fit)["McFadden"]
+regression_fit <- glm(elected ~ stance + President + incumbency + state + office , regression, family = "binomial") 
 
-ggplot(regression, mapping = aes(x = stance, y = elected))  + geom_smooth(method = "lm")
+options(scipen=999)
+
+modelsummary::modelsummary(regression_fit)
+
+library(pscl)
+pscl::pR2(regression_fit)["McFadden"]
+
+ggplot(regression, mapping = aes(x = stance, y = elected))  + geom_smooth(method = "glm")
 
 ```
 
@@ -141,42 +143,14 @@ For the data section, you should note if your research design is cross-sectional
 
 Here is a rubric for the the core components of the final project:
 
-Data section: 2-3 paragraphs + plot visualizing main outcome of interest. (3pts)
 Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
 Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)
 To earn full credit on the visualizations and regression output, they should use informative labels and names and have a small number of digits presented. Tables should use kable or modelsummary to format output nicely. Generally speaking, the final report should mostly be readable by a person who hasn’t taken Gov 50.
 
 ## Project thoughts
-In Republican-leaning states, Republican candidates who deny the 2020 election results have greater electoral success and the opposite occurs in democratic-leaning states. 
+limitations
 [concede that this system is not perfect bc it is the aggregate of the state and we know that states can be politically fragmented with some urban centers being much more liberal than rural place maybe even use IL as an example]
 
-Describe your explanatory variable(s) of interest and how it is measured. Importantly, we need to observe variation in this variable in order to study it!
-
-The explanatory variable of interest is the Republican candidate's stance on the 2020 election results. It is a categorical variable measured 
-"Candidates in the “Fully denied” category have explicitly said the 2020 election was illegitimate and/or took legal measures to try and overturn the election. Examples of the latter include members of Congress who voted against certifying election results or politicians who signed an amicus brief for a Texas lawsuit that challenged election results in four states President Biden won.
-Candidates in the “Raised questions” category raised questions or concerns about the election but haven’t outright denied or affirmed it.
-Candidates in the “Accepted with reservations” category have accepted Biden’s victory but have still raised questions or concerns about fraud.
-Candidates in the “Fully accepted” category have accepted Biden’s victory without reservations.
-Candidates in the “Avoided answering” category refused or avoided directly answering questions about the election (e.g., by changing the subject when asked about it).
-Candidates in the “No comment” category have not made a public comment on the election (as far as we could tell) and did not respond to our inquiries on the topic." 
-
-
-Describe your outcome variable of interest and how it is measured.
-The outcome variable of interest is whether or not the Republican candidate won their race. 
-
-What observed pattern in the data would provide support for your hypothesis? More importantly, what observed pattern would disprove your hypothesis?
-
-
-Introduction: describe the research question and main hypothesis; describe why it is important. (1-2 paragraphs) (2pts)
-Data section: 2-3 paragraphs + plot visualizing main outcome of interest. (3pts)
-
-I want to investigate the relationship between the stance a Republican candidate takes on the results of the 2020 election and their electoral success in the 2022 general elections? 
-How does the partisan lean of the state affect the answer to this question? 
-
-Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
-Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)
-
-[finish later]
 
 ```{r Graph Visualizations}
 
@@ -185,6 +159,13 @@ Conclusion section: 1 paragraph (i) summarizing results and assessing the extent
 election_data |>
   mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   filter(stance == "Denied") |>
+  ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
+  geom_boxplot() +
+  labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
+
+election_data |>
+  mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
+  filter(stance == "Accepted") |>
   ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
   geom_boxplot() +
   labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")

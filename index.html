@@ -1626,7 +1626,6 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p>The results from the mosaic bar charts show a difference in the proportion of Republican election deniers candidates that were elected and not elected. In the elected category, there is a higher proportion of election deniers than in the not elected category which raises concerning signs.</p>
 <p>I ran a 2-sample permutation test to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results.</p>
-<p>My two different samples are Republican candidates who denied the results of the 2020 election and Republican candidates who accepted the results of the 2020 election. The proportions I’m comparing are the proportion of candidates who won their race. The null hypothesis is that there is no difference in the proportion of Republican candidates who are elected based on their stance on the 2020 election. The permutation test provided a p-value of approximately 0, therefore, at alpha = 0.05 level, the difference in proportion of elected Republican candidates is different. I can reject the null hypothesis that there is no difference in the proportion of Republican candidates who were elected based on whether or not they denied the results of the 2020 election.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>election_prop</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
@@ -1723,137 +1722,23 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tbody>
 </table>
 </div>
+<p>In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. Due to the fact that my dependent variable is not continuous but rather binary I could not conduct a linear regression on this data so I did some research and found that a logistic regression model would be better suited for my data. I used to this website (<a href="https://www.statology.org/logistic-regression-in-r/" class="uri">https://www.statology.org/logistic-regression-in-r/</a>) to inform the code I have written in the chunk below. To control for other independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>regression</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>elected <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Elected_or_not</span> <span class='op'>==</span> <span class='st'>"Elected"</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
-<span>         stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span>         stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
 <span>         state <span class='op'>=</span> <span class='va'>election_deniers</span><span class='op'>$</span><span class='va'>State</span>,</span>
 <span>         incumbency <span class='op'>=</span> <span class='va'>election_deniers</span><span class='op'>$</span><span class='va'>Incumbent</span>,</span>
 <span>         office <span class='op'>=</span> <span class='va'>election_deniers</span><span class='op'>$</span><span class='va'>Office</span>,</span>
 <span>         president <span class='op'>=</span> <span class='va'>election_deniers</span><span class='op'>$</span><span class='va'>`Dem or Rep State`</span>,</span>
 <span>         <span class='op'>)</span></span>
 <span></span>
-<span><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>elected</span> <span class='op'>~</span> <span class='va'>stance</span> <span class='op'>+</span> <span class='va'>President</span> <span class='op'>+</span> <span class='va'>incumbency</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='va'>office</span> , <span class='va'>regression</span>, family <span class='op'>=</span> <span class='st'>"binomial"</span><span class='op'>)</span> </span>
-<span><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span><span class='op'>$</span><span class='va'>coefficients</span></span>
-<span><span class='va'>s</span></span></code></pre>
-</div>
-<pre><code>                             Estimate   Std. Error      z value
-(Intercept)               -1.80711918    1.4869961 -1.215281744
-stance                    -0.25096598    0.4042675 -0.620791951
-PresidentTrump             2.33658228    1.6069169  1.454077898
-incumbencyYes              6.28578024    0.7433931  8.455527001
-stateAlaska               -4.53139156    2.5116293 -1.804164185
-stateArizona               0.06897788    1.3415673  0.051415897
-stateArkansas             17.19712294 2872.0403389  0.005987772
-stateCalifornia           -1.41294676    1.2657097 -1.116327682
-stateColorado             -2.41210777    1.9570281 -1.232536102
-stateConnecticut         -18.13660564 3523.9351690 -0.005146691
-stateDelaware            -17.83223564 7458.0680517 -0.002390999
-stateFlorida              -1.68285902    1.3659429 -1.232012717
-stateGeorgia               0.13440002    1.3558954  0.099122704
-stateHawaii              -18.33883585 5309.7177388 -0.003453825
-stateIdaho                17.31950089 3298.2749201  0.005251079
-stateIllinois             -2.71769351    1.7949531 -1.514074936
-stateIndiana              -0.44033499    1.5038135 -0.292812244
-stateIowa                 17.07507325 2867.3059310  0.005955093
-stateKansas               -1.35722682    1.7830739 -0.761172508
-stateKentucky             -3.18387977    2.7073665 -1.176006202
-stateLouisiana            -3.25477199    2.7681933 -1.175774836
-stateMaine               -18.04076777 6200.4570968 -0.002909587
-stateMaryland             -3.12576442    2.3960444 -1.304551985
-stateMassachusetts       -18.10210011 3215.6089538 -0.005629447
-stateMichigan             -2.17711244    1.7701487 -1.229903693
-stateMinnesota            -1.97541353    1.9633686 -1.006134849
-stateMississippi          -1.02537287    1.8701849 -0.548273529
-stateMissouri             -0.68711833    1.5332794 -0.448136414
-stateMontana              17.36359050 5623.7300600  0.003087558
-stateNebraska             17.47455392 3300.5409840  0.005294451
-stateNevada               -0.52346911    1.5398634 -0.339945167
-stateNew Hampshire        -2.35179421    2.6002126 -0.904462269
-stateNew Jersey           -0.75960848    1.4987315 -0.506834252
-stateNew Mexico          -22.35890911 3369.8761626 -0.006634935
-stateNew York              0.56743817    1.1770375  0.482090137
-stateNorth Carolina       -2.30243351    1.4539776 -1.583541229
-stateNorth Dakota         16.99471813 4063.0626977  0.004182736
-stateOhio                 -2.62630750    1.5646825 -1.678492256
-stateOklahoma             16.95471862 2647.2296114  0.006404703
-stateOregon               -0.55459909    1.5387922 -0.360411934
-statePennsylvania         -2.01892633    1.6623322 -1.214514362
-stateRhode Island        -17.89424154 4749.1268830 -0.003767901
-stateSouth Carolina       -0.99733894    1.8544386 -0.537811798
-stateSouth Dakota         17.63616339 3604.7043967  0.004892541
-stateTennessee            -1.12579395    1.8716200 -0.601507754
-stateTexas                -2.13633073    1.3447728 -1.588618328
-stateUtah                 12.13681230 4782.2952870  0.002537863
-stateVermont               0.23459255    1.6098248  0.145725522
-stateVirginia             -0.35625624    1.5114531 -0.235704457
-stateWashington           -2.61102156    2.0215245 -1.291610135
-stateWest Virginia        12.12196386 7604.2356096  0.001594107
-stateWyoming              17.71762265 4995.9000799  0.003546433
-officeGovernor             0.31763699    1.4173936  0.224099347
-officeRepresentative       0.62886132    1.1410482  0.551125983
-officeSecretary of state   0.35083077    1.4562903  0.240907172
-officeSenator              1.45639114    1.2807711  1.137120598
-                             Pr(&gt;|z|)
-(Intercept)              2.242587e-01
-stance                   5.347365e-01
-PresidentTrump           1.459247e-01
-incumbencyYes            2.778297e-17
-stateAlaska              7.120557e-02
-stateArizona             9.589941e-01
-stateArkansas            9.952225e-01
-stateCalifornia          2.642819e-01
-stateColorado            2.177489e-01
-stateConnecticut         9.958936e-01
-stateDelaware            9.980923e-01
-stateFlorida             2.179443e-01
-stateGeorgia             9.210408e-01
-stateHawaii              9.972443e-01
-stateIdaho               9.958103e-01
-stateIllinois            1.300068e-01
-stateIndiana             7.696657e-01
-stateIowa                9.952486e-01
-stateKansas              4.465540e-01
-stateKentucky            2.395924e-01
-stateLouisiana           2.396849e-01
-stateMaine               9.976785e-01
-stateMaryland            1.920454e-01
-stateMassachusetts       9.955084e-01
-stateMichigan            2.187332e-01
-stateMinnesota           3.143507e-01
-stateMississippi         5.835041e-01
-stateMissouri            6.540547e-01
-stateMontana             9.975365e-01
-stateNebraska            9.957757e-01
-stateNevada              7.338978e-01
-stateNew Hampshire       3.657503e-01
-stateNew Jersey          6.122711e-01
-stateNew Mexico          9.947061e-01
-stateNew York            6.297419e-01
-stateNorth Carolina      1.132982e-01
-stateNorth Dakota        9.966627e-01
-stateOhio                9.325104e-02
-stateOklahoma            9.948898e-01
-stateOregon              7.185391e-01
-statePennsylvania        2.245514e-01
-stateRhode Island        9.969937e-01
-stateSouth Carolina      5.907070e-01
-stateSouth Dakota        9.960963e-01
-stateTennessee           5.475018e-01
-stateTexas               1.121466e-01
-stateUtah                9.979751e-01
-stateVermont             8.841381e-01
-stateVirginia            8.136620e-01
-stateWashington          1.964922e-01
-stateWest Virginia       9.987281e-01
-stateWyoming             9.971704e-01
-officeGovernor           8.226800e-01
-officeRepresentative     5.815473e-01
-officeSecretary of state 8.096271e-01
-officeSenator            2.554879e-01</code></pre>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>modelsummary</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/modelsummary/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span></span></code></pre>
+<span><span class='va'>regression_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>elected</span> <span class='op'>~</span> <span class='va'>stance</span> <span class='op'>+</span> <span class='va'>President</span> <span class='op'>+</span> <span class='va'>incumbency</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='va'>office</span> , <span class='va'>regression</span>, family <span class='op'>=</span> <span class='st'>"binomial"</span><span class='op'>)</span> </span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/options.html'>options</a></span><span class='op'>(</span>scipen<span class='op'>=</span><span class='fl'>999</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'>modelsummary</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/modelsummary/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span></span></code></pre>
 </div>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1871,14 +1756,14 @@ officeSenator            2.554879e-01</code></pre>
 (Intercept)
 </td>
 <td style="text-align:center;">
-−1.807
+−2.058
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 </td>
 <td style="text-align:center;">
-(1.487)
+(1.463)
 </td>
 </tr>
 <tr>
@@ -1886,7 +1771,7 @@ officeSenator            2.554879e-01</code></pre>
 stance
 </td>
 <td style="text-align:center;">
-−0.251
+0.251
 </td>
 </tr>
 <tr>
@@ -2749,84 +2634,14 @@ RMSE
 </tbody>
 </table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>fit</span></span></code></pre>
-</div>
-<pre><code>
-Call:  glm(formula = elected ~ stance + President + incumbency + state + 
-    office, family = &quot;binomial&quot;, data = regression)
-
-Coefficients:
-             (Intercept)                    stance  
-                -1.80712                  -0.25097  
-          PresidentTrump             incumbencyYes  
-                 2.33658                   6.28578  
-             stateAlaska              stateArizona  
-                -4.53139                   0.06898  
-           stateArkansas           stateCalifornia  
-                17.19712                  -1.41295  
-           stateColorado          stateConnecticut  
-                -2.41211                 -18.13661  
-           stateDelaware              stateFlorida  
-               -17.83224                  -1.68286  
-            stateGeorgia               stateHawaii  
-                 0.13440                 -18.33884  
-              stateIdaho             stateIllinois  
-                17.31950                  -2.71769  
-            stateIndiana                 stateIowa  
-                -0.44033                  17.07507  
-             stateKansas             stateKentucky  
-                -1.35723                  -3.18388  
-          stateLouisiana                stateMaine  
-                -3.25477                 -18.04077  
-           stateMaryland        stateMassachusetts  
-                -3.12576                 -18.10210  
-           stateMichigan            stateMinnesota  
-                -2.17711                  -1.97541  
-        stateMississippi             stateMissouri  
-                -1.02537                  -0.68712  
-            stateMontana             stateNebraska  
-                17.36359                  17.47455  
-             stateNevada        stateNew Hampshire  
-                -0.52347                  -2.35179  
-         stateNew Jersey           stateNew Mexico  
-                -0.75961                 -22.35891  
-           stateNew York       stateNorth Carolina  
-                 0.56744                  -2.30243  
-       stateNorth Dakota                 stateOhio  
-                16.99472                  -2.62631  
-           stateOklahoma               stateOregon  
-                16.95472                  -0.55460  
-       statePennsylvania         stateRhode Island  
-                -2.01893                 -17.89424  
-     stateSouth Carolina         stateSouth Dakota  
-                -0.99734                  17.63616  
-          stateTennessee                stateTexas  
-                -1.12579                  -2.13633  
-               stateUtah              stateVermont  
-                12.13681                   0.23459  
-           stateVirginia           stateWashington  
-                -0.35626                  -2.61102  
-      stateWest Virginia            stateWisconsin  
-                12.12196                        NA  
-            stateWyoming            officeGovernor  
-                17.71762                   0.31764  
-    officeRepresentative  officeSecretary of state  
-                 0.62886                   0.35083  
-           officeSenator  
-                 1.45639  
-
-Degrees of Freedom: 551 Total (i.e. Null);  496 Residual
-Null Deviance:      764.4 
-Residual Deviance: 220.8    AIC: 332.8</code></pre>
-<div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://github.com/atahk/pscl'>pscl</a></span><span class='op'>)</span></span>
-<span><span class='fu'>pscl</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pscl/man/pR2.html'>pR2</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span><span class='op'>[</span><span class='st'>"McFadden"</span><span class='op'>]</span></span></code></pre>
+<span><span class='fu'>pscl</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pscl/man/pR2.html'>pR2</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span><span class='op'>[</span><span class='st'>"McFadden"</span><span class='op'>]</span></span></code></pre>
 </div>
 <pre><code>fitting null model for pseudo-r2</code></pre>
 <pre><code> McFadden 
 0.7111344 </code></pre>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>regression</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>stance</span>, y <span class='op'>=</span> <span class='va'>elected</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>regression</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>stance</span>, y <span class='op'>=</span> <span class='va'>elected</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"glm"</span><span class='op'>)</span></span></code></pre>
 </div>
 <p><img src="index_files/figure-html5/Regression-1.png" width="624" /></p>
 </div>
@@ -2835,31 +2650,12 @@ Residual Deviance: 220.8    AIC: 332.8</code></pre>
 </ol>
 <p>For the data section, you should note if your research design is cross-sectional (most projects will be of this type) or one of the other designs we discussed (randomized experiment, before-and-after, differences-in-differences). For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.</p>
 <p>Here is a rubric for the the core components of the final project:</p>
-<p>Data section: 2-3 paragraphs + plot visualizing main outcome of interest. (3pts)
-Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
+<p>Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
 Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)
 To earn full credit on the visualizations and regression output, they should use informative labels and names and have a small number of digits presented. Tables should use kable or modelsummary to format output nicely. Generally speaking, the final report should mostly be readable by a person who hasn’t taken Gov 50.</p>
 <h2 id="project-thoughts">Project thoughts</h2>
-<p>In Republican-leaning states, Republican candidates who deny the 2020 election results have greater electoral success and the opposite occurs in democratic-leaning states.
+<p>limitations
 [concede that this system is not perfect bc it is the aggregate of the state and we know that states can be politically fragmented with some urban centers being much more liberal than rural place maybe even use IL as an example]</p>
-<p>Describe your explanatory variable(s) of interest and how it is measured. Importantly, we need to observe variation in this variable in order to study it!</p>
-<p>The explanatory variable of interest is the Republican candidate’s stance on the 2020 election results. It is a categorical variable measured
-“Candidates in the “Fully denied” category have explicitly said the 2020 election was illegitimate and/or took legal measures to try and overturn the election. Examples of the latter include members of Congress who voted against certifying election results or politicians who signed an amicus brief for a Texas lawsuit that challenged election results in four states President Biden won.
-Candidates in the “Raised questions” category raised questions or concerns about the election but haven’t outright denied or affirmed it.
-Candidates in the “Accepted with reservations” category have accepted Biden’s victory but have still raised questions or concerns about fraud.
-Candidates in the “Fully accepted” category have accepted Biden’s victory without reservations.
-Candidates in the “Avoided answering” category refused or avoided directly answering questions about the election (e.g., by changing the subject when asked about it).
-Candidates in the “No comment” category have not made a public comment on the election (as far as we could tell) and did not respond to our inquiries on the topic.”</p>
-<p>Describe your outcome variable of interest and how it is measured.
-The outcome variable of interest is whether or not the Republican candidate won their race.</p>
-<p>What observed pattern in the data would provide support for your hypothesis? More importantly, what observed pattern would disprove your hypothesis?</p>
-<p>Introduction: describe the research question and main hypothesis; describe why it is important. (1-2 paragraphs) (2pts)
-Data section: 2-3 paragraphs + plot visualizing main outcome of interest. (3pts)</p>
-<p>I want to investigate the relationship between the stance a Republican candidate takes on the results of the 2020 election and their electoral success in the 2022 general elections?
-How does the partisan lean of the state affect the answer to this question?</p>
-<p>Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
-Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)</p>
-<p>[finish later]</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create a boxplot using ggplot and dplyr</span></span>
@@ -2870,9 +2666,18 @@ Conclusion section: 1 paragraph (i) summarizing results and assessing the extent
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Elecion Deniers: State Partisan Lean vs Election Outcome"</span>, x <span class='op'>=</span> <span class='st'>"Elected or not"</span>, y <span class='op'>=</span> <span class='st'>"State Partisan Lean"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="index_files/figure-html5/Graph%20Visualizations-1.png" width="624" /></p>
+<img src="index_files/figure-html5/Graph%20Visualizations-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='st'>"Denied"</span>, <span class='st'>"Accepted"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>stance</span> <span class='op'>==</span> <span class='st'>"Accepted"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Elected_or_not</span>, y <span class='op'>=</span> <span class='va'>State_partisan_lean</span>, fill <span class='op'>=</span> <span class='va'>Elected_or_not</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Elecion Deniers: State Partisan Lean vs Election Outcome"</span>, x <span class='op'>=</span> <span class='st'>"Elected or not"</span>, y <span class='op'>=</span> <span class='st'>"State Partisan Lean"</span><span class='op'>)</span></span></code></pre>
 </div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p><img src="index_files/figure-html5/Graph%20Visualizations-2.png" width="624" /></p>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
