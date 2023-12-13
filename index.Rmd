@@ -75,6 +75,7 @@ I ran a 2-sample permutation test in the chunk below to compare the proportion o
 
 ```{r Hypothesis Test (2 Sample Permutation Test with Infer)}
 #Hypothesis Test (2 Sample Permutation Test with Infer)
+set.seed(02138)
 
 #I created election_prop to find the proportion of Republican candidates elected based on their stance (Denied or Accepted) on the results of the 2020 presidential election.
 election_prop <- election_data |>
