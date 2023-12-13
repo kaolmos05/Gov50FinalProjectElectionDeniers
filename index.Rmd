@@ -12,7 +12,7 @@ The research question I have set out to answer is whether or not the stance a Re
 
 After the 2022 general election, numerous news articles and political pundits talked about the role of denying or accepting the results of the 2020 presidential election on electoral success of a candidate. This question is interesting because the answer to this question could shed light on potential warnings for democracy. If denying the results of the 2020 presidential election turns out to be an influencing factor in electoral success it could encourage future candidates to reject results of fair elections, thereby threatening democracy as it increases misinformation and polarization. 
 
-Data Section: 
+Data Section
 
 I obtained most of the data in my imported data set from FiveThirtyEight's Github repository (https://github.com/fivethirtyeight/data/tree/master/election-deniers). The key dependent and independent variables I will look at are 'Won or Lost their Race' and 'Stance'. The independent variable is the stance a Republican candidate takes on the 2020 presidential election results. Those stances include “Fully denied”, “Raised questions”, “Accepted with reservations”, “Fully accepted”, “Avoided answering”, and “No comment” which are all self-explanatory. FiveThirtyEight includes the sources for the stances of candidates in the `Source` variable. This variable is measured through the public responses of these candidates, their actions, and their lack of response to FiveThirtyEight's survey on their stances. I end up making this a binary variable by condensing these stances into two: Denied or Accepted the results of the 2020 presidential elections for my statistical analysis but I do recognize this is not ideal. 
 
@@ -193,15 +193,17 @@ election_data |>
   mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   filter(stance == "Denied") |>
   ggplot(aes(x = State_partisan_lean, y = Elected_or_not, fill = Elected_or_not)) +
+  scale_fill_manual(values = c("indianred", "dodgerblue")) +
   geom_boxplot() +
-  labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
+  labs(title = "Election Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
 
 election_data |>
   mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   filter(stance == "Accepted") |>
   ggplot(aes(x = State_partisan_lean, y = Elected_or_not, fill = Elected_or_not)) +
+  scale_fill_manual(values = c("indianred", "dodgerblue")) +
   geom_boxplot() +
-  labs(title = "Elecion Acceptors: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
+  labs(title = "Election Acceptors: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
 
 ```
 
