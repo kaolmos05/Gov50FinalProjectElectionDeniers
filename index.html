@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["fivethirtyeight_election_deniers_Gov50_final.csv","fivethirtyeight_election_deniers_Gov50_final.xlsx","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/Data Section Graphs: Summarizing the Dependent Variable-1.png","index_files/figure-html5/Graph Visualizations-1.png","index_files/figure-html5/Graph Visualizations-2.png","index_files/figure-html5/Hypothesis Test (2 Sample Permutation Test with Infer)-1.png","index_files/figure-html5/Hypothesis test-1.png","index_files/figure-html5/Regression-1.png","index_files/figure-html5/unnamed-chunk-1-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.24/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/kePrint-0.0.1/kePrint.js","index_files/lightable-0.0.1/lightable.css","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["fivethirtyeight_election_deniers_Gov50_final.csv","fivethirtyeight_election_deniers_Gov50_final.xlsx","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/Data Section Graphs: Summarizing the Dependent Variable-1.png","index_files/figure-html5/Data Visualizations-1.png","index_files/figure-html5/Data Visualizations-2.png","index_files/figure-html5/Graph Visualizations-1.png","index_files/figure-html5/Graph Visualizations-2.png","index_files/figure-html5/Hypothesis Test (2 Sample Permutation Test with Infer)-1.png","index_files/figure-html5/Hypothesis test-1.png","index_files/figure-html5/Regression-1.png","index_files/figure-html5/unnamed-chunk-1-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.24/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/kePrint-0.0.1/kePrint.js","index_files/lightable-0.0.1/lightable.css","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1525,6 +1525,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <p>Data Section:</p>
 <p>I obtained most of the data in my imported data set from FiveThirtyEight’s Github repository (<a href="https://github.com/fivethirtyeight/data/tree/master/election-deniers" class="uri">https://github.com/fivethirtyeight/data/tree/master/election-deniers</a>). The key dependent and independent variables I will look at are ‘Won or Lost their Race’ and ‘Stance’. The independent variable is the stance a Republican candidate takes on the 2020 presidential election results. Those stances include “Fully denied”, “Raised questions”, “Accepted with reservations”, “Fully accepted”, “Avoided answering”, and “No comment” which are all self-explanatory. FiveThirtyEight includes the sources for the stances of candidates in the <code>Source</code> variable. This variable is measured through the public responses of these candidates, their actions, and their lack of response to FiveThirtyEight’s survey on their stances. I end up making this a binary variable by condensing these stances into two: Denied or Accepted the results of the 2020 presidential elections for my statistical analysis but I do recognize this is not ideal.</p>
 <p>The key dependent variable is ‘Won or Lost their Race’ and I manually did the research for all 500+ candidates with Ballotpedia. I looked up whether each candidate in the data set was elected or not in the 2022 general elections. I also did the same for ‘Dem or Rep State’ is measured with by what president the state went for in the 2020 presidential election. I used CNN’s 2020 presidential results (<a href="https://www.cnn.com/election/2020/results/president" class="uri">https://www.cnn.com/election/2020/results/president</a>) to find out what president each state went for in 2020. I also added ‘The FiveThirtyEight partisan lean of every state’ (<a href="https://fivethirtyeight.com/features/how-red-or-blue-is-your-state-your-congressional-district/#" class="uri">https://fivethirtyeight.com/features/how-red-or-blue-is-your-state-your-congressional-district/#</a>) as a variable to this data set and it is a continuous variable, with negative values indicating a democratic lean, the smaller the number the greater democratic leaning the state has. Positive values indicated a republican lean with greater numbers indicating a stronger republican lean. I added these variables manually because at the beginning I thought they would be useful for my analysis.</p>
+<p>This study is an observational study because a treatment was not administered, nor was a control group established. I ran a 2 sample permutation test to find whether the difference in proportion of elected Republican candidates was statistically significant based on their stance on the results of the 2020 election.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Loading Packages and Data Source(CSV File)</span></span>
@@ -1637,10 +1638,13 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <p><img src="index_files/figure-html5/Data%20Section%20Graphs:%20Summarizing%20the%20Dependent%20Variable-1.png" width="624" /></p>
 </div>
 <p>The results from the mosaic bar charts show a difference in the proportion of Republican election deniers candidates that were elected and not elected. In the elected category, there is a higher proportion of election deniers than in the not elected category which raises concerning signs.</p>
-<p>I ran a 2-sample permutation test in the chunk below to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results.</p>
+<p>2-sample permutation test</p>
+<p>I ran a 2-sample permutation test in the chunk below to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results or at the very least did not act in a way or indicate that they would act in a way that would prevent the certification of valid election results.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Hypothesis Test (2 Sample Permutation Test with Infer)</span></span>
+<span></span>
+<span><span class='co'>#I created election_prop to find the proportion of Republican candidates elected based on their stance (Denied or Accepted) on the results of the 2020 presidential election.</span></span>
 <span><span class='va'>election_prop</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>partisan_leaning <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>State_partisan_lean</span> <span class='op'>&gt;=</span> <span class='fl'>0</span>, <span class='st'>"Conservative Leaning"</span>, <span class='st'>"Liberal Leaning"</span><span class='op'>)</span>,</span>
 <span>         elected <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Elected_or_not</span> <span class='op'>==</span> <span class='st'>"Elected"</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
@@ -1669,7 +1673,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tbody>
 </table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>election_data_modified</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#I created election_data_modified to calculate the difference in proportions of elected candidates between the Denied and Accepted stances.</span></span>
+<span><span class='va'>election_data_modified</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>partisan_leaning <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>State_partisan_lean</span> <span class='op'>&gt;=</span> <span class='fl'>0</span>, <span class='st'>"Conservative Leaning"</span>, <span class='st'>"Liberal Leaning"</span><span class='op'>)</span>,</span>
 <span>         elected <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Elected_or_not</span> <span class='op'>==</span> <span class='st'>"Elected"</span>, <span class='st'>"1"</span>, <span class='st'>"0"</span><span class='op'>)</span>,</span>
 <span>         stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='st'>"Denied"</span>, <span class='st'>"Accepted"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
@@ -1694,12 +1699,14 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tbody>
 </table>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>set_hypothesis</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Set up my hypothesis</span></span>
+<span><span class='va'>set_hypothesis</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>elected <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Elected_or_not</span> <span class='op'>==</span> <span class='st'>"Elected"</span>, <span class='st'>"1"</span>, <span class='st'>"0"</span><span class='op'>)</span>,</span>
 <span>         stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='st'>"Denied"</span>, <span class='st'>"Accepted"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://infer.tidymodels.org/reference/specify.html'>specify</a></span><span class='op'>(</span><span class='va'>elected</span> <span class='op'>~</span> <span class='va'>stance</span>, success <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
 <span>  <span class='fu'><a href='https://infer.tidymodels.org/reference/hypothesize.html'>hypothesize</a></span><span class='op'>(</span>null <span class='op'>=</span> <span class='st'>"independence"</span><span class='op'>)</span> </span>
-<span>  </span>
+<span></span>
+<span><span class='co'>#null distribution of the difference in proportions </span></span>
 <span><span class='va'>null_dist</span> <span class='op'>&lt;-</span> <span class='va'>set_hypothesis</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://infer.tidymodels.org/reference/specify.html'>specify</a></span><span class='op'>(</span><span class='va'>elected</span> <span class='op'>~</span> <span class='va'>stance</span>, success <span class='op'>=</span> <span class='st'>"1"</span><span class='op'>)</span> <span class='op'>|&gt;</span> </span>
 <span>  <span class='fu'><a href='https://infer.tidymodels.org/reference/hypothesize.html'>hypothesize</a></span><span class='op'>(</span>null <span class='op'>=</span> <span class='st'>"independence"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
@@ -1734,7 +1741,10 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tbody>
 </table>
 </div>
-<p>In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. To control for other independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model.</p>
+<p>Results</p>
+<p>The observed difference in proportion of elected Republican candidates is 0.263513 (denied election - accepted election). The p-value is 0, indicating that the observed difference is statistically significant. Since the p-value is less than alpha = 0.05, there is evidence to reject the null hypothesis that there is no observed difference. It suggests that there is a significant difference in the proportion of elected candidates between the Denied and Accepted stances. However, there are so many confounding variables that could explain this difference in proportion and that’s why I run a linear regression in the next step of analysis.</p>
+<p>Linear Regression</p>
+<p>In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. To control for other confounding independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>regression</span> <span class='op'>&lt;-</span> <span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
@@ -1746,978 +1756,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span>         <span class='op'>)</span></span>
 <span></span>
 <span><span class='va'>regression_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>elected</span> <span class='op'>~</span> <span class='va'>stance</span> <span class='op'>+</span> <span class='va'>President</span> <span class='op'>+</span> <span class='va'>incumbency</span> <span class='op'>+</span> <span class='va'>office</span> <span class='op'>+</span> <span class='va'>state</span>, <span class='va'>regression</span><span class='op'>)</span> </span>
-<span><span class='va'>regression_fit</span></span></code></pre>
-</div>
-<pre><code>
-Call:
-lm(formula = elected ~ stance + President + incumbency + office + 
-    state, data = regression)
-
-Coefficients:
-             (Intercept)                    stance  
-                0.295902                  0.032390  
-          PresidentTrump             incumbencyYes  
-                0.220995                  0.666753  
-          officeGovernor      officeRepresentative  
-               -0.079676                 -0.068645  
-officeSecretary of state             officeSenator  
-               -0.020514                 -0.031552  
-             stateAlaska              stateArizona  
-               -0.334062                 -0.004285  
-           stateArkansas           stateCalifornia  
-                0.029780                 -0.129939  
-           stateColorado          stateConnecticut  
-               -0.166645                 -0.243128  
-           stateDelaware              stateFlorida  
-               -0.261579                 -0.137878  
-            stateGeorgia               stateHawaii  
-                0.046660                 -0.233772  
-              stateIdaho             stateIllinois  
-                0.067245                 -0.189270  
-            stateIndiana                 stateIowa  
-               -0.007390                  0.033829  
-             stateKansas             stateKentucky  
-               -0.149022                 -0.172538  
-          stateLouisiana                stateMaine  
-               -0.186419                 -0.223580  
-           stateMaryland        stateMassachusetts  
-               -0.217350                 -0.245704  
-           stateMichigan            stateMinnesota  
-               -0.141873                 -0.121578  
-        stateMississippi             stateMissouri  
-               -0.047823                  0.014674  
-            stateMontana             stateNebraska  
-                0.202177                  0.089622  
-             stateNevada        stateNew Hampshire  
-               -0.094651                 -0.158558  
-         stateNew Jersey           stateNew Mexico  
-               -0.091081                 -0.366803  
-           stateNew York       stateNorth Carolina  
-                0.071867                 -0.199208  
-       stateNorth Dakota                 stateOhio  
-                0.013216                 -0.185355  
-           stateOklahoma               stateOregon  
-                0.071008                 -0.071956  
-       statePennsylvania         stateRhode Island  
-               -0.098590                 -0.248406  
-     stateSouth Carolina         stateSouth Dakota  
-               -0.115339                  0.123129  
-          stateTennessee                stateTexas  
-               -0.106463                 -0.175890  
-               stateUtah              stateVermont  
-               -0.135380                  0.004347  
-           stateVirginia           stateWashington  
-               -0.024001                 -0.178872  
-      stateWest Virginia            stateWisconsin  
-               -0.147395                        NA  
-            stateWyoming  
-                0.295537  </code></pre>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>modelsummary</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/modelsummary/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
-</div>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:center;">
- (1)
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:center;">
-0.296
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.099)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stance
-</td>
-<td style="text-align:center;">
-0.032
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.030)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PresidentTrump
-</td>
-<td style="text-align:center;">
-0.221
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.122)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-incumbencyYes
-</td>
-<td style="text-align:center;">
-0.667
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.030)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-officeGovernor
-</td>
-<td style="text-align:center;">
-−0.080
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.073)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-officeRepresentative
-</td>
-<td style="text-align:center;">
-−0.069
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.058)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-officeSecretary of state
-</td>
-<td style="text-align:center;">
-−0.021
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.079)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-officeSenator
-</td>
-<td style="text-align:center;">
-−0.032
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.074)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateAlaska
-</td>
-<td style="text-align:center;">
-−0.334
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.158)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateArizona
-</td>
-<td style="text-align:center;">
-−0.004
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.117)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateArkansas
-</td>
-<td style="text-align:center;">
-0.030
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.136)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateCalifornia
-</td>
-<td style="text-align:center;">
-−0.130
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.094)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateColorado
-</td>
-<td style="text-align:center;">
-−0.167
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.119)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateConnecticut
-</td>
-<td style="text-align:center;">
-−0.243
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.129)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateDelaware
-</td>
-<td style="text-align:center;">
-−0.262
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.223)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateFlorida
-</td>
-<td style="text-align:center;">
-−0.138
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.102)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateGeorgia
-</td>
-<td style="text-align:center;">
-0.047
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.108)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateHawaii
-</td>
-<td style="text-align:center;">
-−0.234
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.169)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateIdaho
-</td>
-<td style="text-align:center;">
-0.067
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.148)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateIllinois
-</td>
-<td style="text-align:center;">
-−0.189
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.107)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateIndiana
-</td>
-<td style="text-align:center;">
-−0.007
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.125)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateIowa
-</td>
-<td style="text-align:center;">
-0.034
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.137)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateKansas
-</td>
-<td style="text-align:center;">
-−0.149
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.135)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateKentucky
-</td>
-<td style="text-align:center;">
-−0.173
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.142)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateLouisiana
-</td>
-<td style="text-align:center;">
-−0.186
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.141)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMaine
-</td>
-<td style="text-align:center;">
-−0.224
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.189)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMaryland
-</td>
-<td style="text-align:center;">
-−0.217
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.122)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMassachusetts
-</td>
-<td style="text-align:center;">
-−0.246
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.122)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMichigan
-</td>
-<td style="text-align:center;">
-−0.142
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.111)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMinnesota
-</td>
-<td style="text-align:center;">
-−0.122
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.121)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMississippi
-</td>
-<td style="text-align:center;">
-−0.048
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.170)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMissouri
-</td>
-<td style="text-align:center;">
-0.015
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.131)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateMontana
-</td>
-<td style="text-align:center;">
-0.202
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.224)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNebraska
-</td>
-<td style="text-align:center;">
-0.090
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.149)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNevada
-</td>
-<td style="text-align:center;">
-−0.095
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.133)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNew Hampshire
-</td>
-<td style="text-align:center;">
-−0.159
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.168)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNew Jersey
-</td>
-<td style="text-align:center;">
-−0.091
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.120)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNew Mexico
-</td>
-<td style="text-align:center;">
-−0.367
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.146)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNew York
-</td>
-<td style="text-align:center;">
-0.072
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.102)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNorth Carolina
-</td>
-<td style="text-align:center;">
-−0.199
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.116)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateNorth Dakota
-</td>
-<td style="text-align:center;">
-0.013
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.172)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateOhio
-</td>
-<td style="text-align:center;">
-−0.185
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.111)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateOklahoma
-</td>
-<td style="text-align:center;">
-0.071
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.131)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateOregon
-</td>
-<td style="text-align:center;">
-−0.072
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.133)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-statePennsylvania
-</td>
-<td style="text-align:center;">
-−0.099
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.109)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateRhode Island
-</td>
-<td style="text-align:center;">
-−0.248
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.156)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateSouth Carolina
-</td>
-<td style="text-align:center;">
-−0.115
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.124)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateSouth Dakota
-</td>
-<td style="text-align:center;">
-0.123
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.158)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateTennessee
-</td>
-<td style="text-align:center;">
-−0.106
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.127)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateTexas
-</td>
-<td style="text-align:center;">
-−0.176
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.100)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateUtah
-</td>
-<td style="text-align:center;">
-−0.135
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.158)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateVermont
-</td>
-<td style="text-align:center;">
-0.004
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.155)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateVirginia
-</td>
-<td style="text-align:center;">
-−0.024
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.122)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateWashington
-</td>
-<td style="text-align:center;">
-−0.179
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.122)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateWest Virginia
-</td>
-<td style="text-align:center;">
-−0.147
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:center;">
-(0.224)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-stateWyoming
-</td>
-<td style="text-align:center;">
-0.296
-</td>
-</tr>
-<tr>
-<td style="text-align:left;box-shadow: 0px 1.5px">
-</td>
-<td style="text-align:center;box-shadow: 0px 1.5px">
-(0.190)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Num.Obs.
-</td>
-<td style="text-align:center;">
-552
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-R2
-</td>
-<td style="text-align:center;">
-0.697
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-R2 Adj.
-</td>
-<td style="text-align:center;">
-0.663
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-RMSE
-</td>
-<td style="text-align:center;">
-0.28
-</td>
-</tr>
-</tbody>
-</table>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>p_value</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/tidy.html'>tidy</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span><span class='op'>$</span><span class='va'>p.value</span></span>
-<span><span class='va'>p_value</span></span></code></pre>
-</div>
-<pre><code> [1] 2.958899e-03 2.737808e-01 6.996043e-02 6.171484e-76 2.783818e-01
- [6] 2.371096e-01 7.943323e-01 6.699271e-01 3.526083e-02 9.707800e-01
-[11] 8.269909e-01 1.690060e-01 1.609989e-01 5.994744e-02 2.421500e-01
-[16] 1.785338e-01 6.666117e-01 1.668893e-01 6.492144e-01 7.658507e-02
-[21] 9.529047e-01 8.046813e-01 2.703847e-01 2.252355e-01 1.865153e-01
-[26] 2.364837e-01 7.527159e-02 4.475461e-02 2.023078e-01 3.168491e-01
-[31] 7.786986e-01 9.110048e-01 3.662632e-01 5.480788e-01 4.777140e-01
-[36] 3.465749e-01 4.469012e-01 1.213709e-02 4.798562e-01 8.700675e-02
-[41] 9.387030e-01 9.505986e-02 5.872471e-01 5.893113e-01 3.647937e-01
-[46] 1.112467e-01 3.528562e-01 4.373971e-01 4.031269e-01 7.791839e-02
-[51] 3.910119e-01 9.776929e-01 8.438194e-01 1.430160e-01 5.101276e-01
-[56]           NA 1.210948e-01</code></pre>
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span></span></code></pre>
+<span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span></span></code></pre>
 </div>
 <pre><code>
 Call:
@@ -2794,56 +1833,1338 @@ Residual standard error: 0.2902 on 496 degrees of freedom
 Multiple R-squared:  0.6969,    Adjusted R-squared:  0.6632 
 F-statistic: 20.73 on 55 and 496 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>pscl</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pscl/man/pR2.html'>pR2</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span><span class='op'>[</span><span class='st'>"McFadden"</span><span class='op'>]</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>p_value</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/generics/man/tidy.html'>tidy</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span><span class='op'>$</span><span class='va'>p.value</span></span>
+<span><span class='va'>p_value</span></span></code></pre>
 </div>
-<pre><code>fitting null model for pseudo-r2</code></pre>
-<pre><code> McFadden 
-0.8231333 </code></pre>
+<pre><code> [1] 2.958899e-03 2.737808e-01 6.996043e-02 6.171484e-76 2.783818e-01
+ [6] 2.371096e-01 7.943323e-01 6.699271e-01 3.526083e-02 9.707800e-01
+[11] 8.269909e-01 1.690060e-01 1.609989e-01 5.994744e-02 2.421500e-01
+[16] 1.785338e-01 6.666117e-01 1.668893e-01 6.492144e-01 7.658507e-02
+[21] 9.529047e-01 8.046813e-01 2.703847e-01 2.252355e-01 1.865153e-01
+[26] 2.364837e-01 7.527159e-02 4.475461e-02 2.023078e-01 3.168491e-01
+[31] 7.786986e-01 9.110048e-01 3.662632e-01 5.480788e-01 4.777140e-01
+[36] 3.465749e-01 4.469012e-01 1.213709e-02 4.798562e-01 8.700675e-02
+[41] 9.387030e-01 9.505986e-02 5.872471e-01 5.893113e-01 3.647937e-01
+[46] 1.112467e-01 3.528562e-01 4.373971e-01 4.031269e-01 7.791839e-02
+[51] 3.910119e-01 9.776929e-01 8.438194e-01 1.430160e-01 5.101276e-01
+[56]           NA 1.210948e-01</code></pre>
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>regression</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>stance</span>, y <span class='op'>=</span> <span class='va'>elected</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'>modelsummary</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/modelsummary/man/modelsummary.html'>modelsummary</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>regression_fit</span><span class='op'>)</span>,</span>
+<span>                           statistic <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"s.e. = {std.error}"</span>,</span>
+<span>                                         <span class='st'>"p = {p.value}"</span><span class='op'>)</span>,</span>
+<span>                           gof_map <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"nobs"</span>, <span class='st'>"r.squared"</span>, <span class='st'>"adj.r.squared"</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+ (1)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.296
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.099
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stance
+</td>
+<td style="text-align:center;">
+0.032
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.274
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PresidentTrump
+</td>
+<td style="text-align:center;">
+0.221
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.070
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+incumbencyYes
+</td>
+<td style="text-align:center;">
+0.667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = &lt;0.001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+officeGovernor
+</td>
+<td style="text-align:center;">
+−0.080
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.073
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.278
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+officeRepresentative
+</td>
+<td style="text-align:center;">
+−0.069
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.058
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.237
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+officeSecretary of state
+</td>
+<td style="text-align:center;">
+−0.021
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.079
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.794
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+officeSenator
+</td>
+<td style="text-align:center;">
+−0.032
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.074
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.670
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateAlaska
+</td>
+<td style="text-align:center;">
+−0.334
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.158
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.035
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateArizona
+</td>
+<td style="text-align:center;">
+−0.004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.117
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.971
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateArkansas
+</td>
+<td style="text-align:center;">
+0.030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.136
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.827
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateCalifornia
+</td>
+<td style="text-align:center;">
+−0.130
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.094
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.169
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateColorado
+</td>
+<td style="text-align:center;">
+−0.167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.119
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.161
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateConnecticut
+</td>
+<td style="text-align:center;">
+−0.243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.129
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.060
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateDelaware
+</td>
+<td style="text-align:center;">
+−0.262
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.223
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.242
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateFlorida
+</td>
+<td style="text-align:center;">
+−0.138
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.102
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.179
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateGeorgia
+</td>
+<td style="text-align:center;">
+0.047
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.108
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.667
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateHawaii
+</td>
+<td style="text-align:center;">
+−0.234
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.169
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateIdaho
+</td>
+<td style="text-align:center;">
+0.067
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.148
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.649
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateIllinois
+</td>
+<td style="text-align:center;">
+−0.189
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.107
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.077
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateIndiana
+</td>
+<td style="text-align:center;">
+−0.007
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.125
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.953
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateIowa
+</td>
+<td style="text-align:center;">
+0.034
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.137
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.805
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateKansas
+</td>
+<td style="text-align:center;">
+−0.149
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.135
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.270
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateKentucky
+</td>
+<td style="text-align:center;">
+−0.173
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.142
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.225
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateLouisiana
+</td>
+<td style="text-align:center;">
+−0.186
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.141
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.187
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMaine
+</td>
+<td style="text-align:center;">
+−0.224
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.189
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.236
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMaryland
+</td>
+<td style="text-align:center;">
+−0.217
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.075
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMassachusetts
+</td>
+<td style="text-align:center;">
+−0.246
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.045
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMichigan
+</td>
+<td style="text-align:center;">
+−0.142
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.202
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMinnesota
+</td>
+<td style="text-align:center;">
+−0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.121
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.317
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMississippi
+</td>
+<td style="text-align:center;">
+−0.048
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.170
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.779
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMissouri
+</td>
+<td style="text-align:center;">
+0.015
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.131
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.911
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateMontana
+</td>
+<td style="text-align:center;">
+0.202
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.224
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.366
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNebraska
+</td>
+<td style="text-align:center;">
+0.090
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.149
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.548
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNevada
+</td>
+<td style="text-align:center;">
+−0.095
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.133
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.478
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNew Hampshire
+</td>
+<td style="text-align:center;">
+−0.159
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.168
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.347
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNew Jersey
+</td>
+<td style="text-align:center;">
+−0.091
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.120
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.447
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNew Mexico
+</td>
+<td style="text-align:center;">
+−0.367
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.146
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.012
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNew York
+</td>
+<td style="text-align:center;">
+0.072
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.102
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNorth Carolina
+</td>
+<td style="text-align:center;">
+−0.199
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.116
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.087
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateNorth Dakota
+</td>
+<td style="text-align:center;">
+0.013
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.172
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.939
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateOhio
+</td>
+<td style="text-align:center;">
+−0.185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.095
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateOklahoma
+</td>
+<td style="text-align:center;">
+0.071
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.131
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.587
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateOregon
+</td>
+<td style="text-align:center;">
+−0.072
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.133
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.589
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+statePennsylvania
+</td>
+<td style="text-align:center;">
+−0.099
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.109
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.365
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateRhode Island
+</td>
+<td style="text-align:center;">
+−0.248
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.156
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.111
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateSouth Carolina
+</td>
+<td style="text-align:center;">
+−0.115
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.124
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.353
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateSouth Dakota
+</td>
+<td style="text-align:center;">
+0.123
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.158
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.437
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateTennessee
+</td>
+<td style="text-align:center;">
+−0.106
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.127
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.403
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateTexas
+</td>
+<td style="text-align:center;">
+−0.176
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.078
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateUtah
+</td>
+<td style="text-align:center;">
+−0.135
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.158
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.391
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateVermont
+</td>
+<td style="text-align:center;">
+0.004
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.155
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.978
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateVirginia
+</td>
+<td style="text-align:center;">
+−0.024
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.844
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateWashington
+</td>
+<td style="text-align:center;">
+−0.179
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.122
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.143
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateWest Virginia
+</td>
+<td style="text-align:center;">
+−0.147
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.224
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+p = 0.510
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stateWyoming
+</td>
+<td style="text-align:center;">
+0.296
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+</td>
+<td style="text-align:center;">
+s.e. = 0.190
+</td>
+</tr>
+<tr>
+<td style="text-align:left;box-shadow: 0px 1.5px">
+</td>
+<td style="text-align:center;box-shadow: 0px 1.5px">
+p = 0.121
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Num.Obs.
+</td>
+<td style="text-align:center;">
+552
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2
+</td>
+<td style="text-align:center;">
+0.697
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+R2 Adj.
+</td>
+<td style="text-align:center;">
+0.663
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>regression_line</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>regression</span>, mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>stance</span>, y <span class='op'>=</span> <span class='va'>elected</span><span class='op'>)</span><span class='op'>)</span>  <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_smooth.html'>geom_smooth</a></span><span class='op'>(</span>method <span class='op'>=</span> <span class='st'>"lm"</span><span class='op'>)</span> <span class='op'>+</span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
+<span>    x <span class='op'>=</span> <span class='st'>"Stance (1 = fully denied, 0 = accepted)"</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Elected (1 = elected, 0 = not elected)"</span></span>
+<span>  <span class='op'>)</span></span>
+<span><span class='va'>regression_line</span></span></code></pre>
 </div>
 <p><img src="index_files/figure-html5/Regression-1.png" width="624" /></p>
 </div>
-<h4>Results</h4>
+<p>Results</p>
 <p>To interpret the results of the linear regression, I will start by interpreting the intercept, 0.295902, this represents the proportion of percent change of having the outcome elected equals 1 or when the republican candidate is elected when all other predictors equal 0 is 29.6%.</p>
 <p>The coefficient of stance is 0.032390. In context, it represents the proportion of percent change of being elected increases by 3.2% when stance increases by 1 which can only be stance = 1 due to the binary nature of this variable in this study. Therefore when a Republican candidate fully denies the election, the percent change of being elected increases by 3.2%.</p>
 <p>The coefficient of PresidentTrump is 0.220995 which means that if the state went for President Trump in 2020, the the percent change of being elected increases by 22.1%.</p>
 <p>The coefficient of incumbencyYes is 66.7% which means that if the candidate is an incumbent, the the percent change of being elected increases by 66.7%.</p>
 <p>All 50 states have different coefficient values, but essentially the coefficient represents the increase or decrease in percent change of being elected in a specific state as a republican candidate. For example, the Illinois coefficient is -0.189270, which means that the percent change of being elected as a republican candidate in Illinois decreases by 18.9%%.</p>
 <p>The coefficients for office have different coefficients based on the office but essentially represent the increase or decrease in percent change of being elected in a specific office as a republican candidate. For example the coefficient of the Senator office is -0.031552 which means that percent change of being elected as a senator as a republican candidate decreases by 3.1%.</p>
-<ol start="3" type="1">
-<li>a results section that contains a scatterplot, barplot, or boxplot of the main relationship of interest and output for the main regression of interest; and (4) a brief (one paragraph) concluding section that summarizes your results, assesses the extent to which you find support for your hypothesis, describes limitations of your analysis and threats to inference, and states how your analysis could be improved (e.g., improved data that would be useful to collect).</li>
-</ol>
-<p>For the data section, you should note if your research design is cross-sectional (most projects will be of this type) or one of the other designs we discussed (randomized experiment, before-and-after, differences-in-differences). For the results section, you should interpret (in plain English) the main coefficient of interest in your regression. You should also comment on the statistical significance of the estimated coefficient and whether or not you believe the coefficient to represent a causal effect.</p>
-<p>Here is a rubric for the the core components of the final project:</p>
-<p>Results section: plot of main analysis + regression output + 2-3 paragraphs of description and interpretation of the plots and regression (including interpreting the main coefficient of interest and describing if it is statistically significant and if we should interpret it causally). This section could be longer if you choose to include additional analyses. (8pts)
-Conclusion section: 1 paragraph (i) summarizing results and assessing the extent to which you find support for your hypothesis; (ii) describing limitations of the analysis and threats to inference (missing data, confounding, etc), and stating how you could improve your analysis if you had more time/money. (2pts)
-To earn full credit on the visualizations and regression output, they should use informative labels and names and have a small number of digits presented. Tables should use kable or modelsummary to format output nicely. Generally speaking, the final report should mostly be readable by a person who hasn’t taken Gov 50.</p>
-<h2 id="project-thoughts">Project thoughts</h2>
+<p>Conclusion</p>
 <p>limitations
 [concede that this system is not perfect bc it is the aggregate of the state and we know that states can be politically fragmented with some urban centers being much more liberal than rural place maybe even use IL as an example]</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'># Create a boxplot using ggplot and dplyr</span></span>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='co'>#Bonus Data Visualizations</span></span>
 <span><span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='st'>"Denied"</span>, <span class='st'>"Accepted"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>stance</span> <span class='op'>==</span> <span class='st'>"Denied"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Elected_or_not</span>, y <span class='op'>=</span> <span class='va'>State_partisan_lean</span>, fill <span class='op'>=</span> <span class='va'>Elected_or_not</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>State_partisan_lean</span>, y <span class='op'>=</span> <span class='va'>Elected_or_not</span>, fill <span class='op'>=</span> <span class='va'>Elected_or_not</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Elecion Deniers: State Partisan Lean vs Election Outcome"</span>, x <span class='op'>=</span> <span class='st'>"Elected or not"</span>, y <span class='op'>=</span> <span class='st'>"State Partisan Lean"</span><span class='op'>)</span></span></code></pre>
 </div>
-<img src="index_files/figure-html5/Graph%20Visualizations-1.png" width="624" />
+<img src="index_files/figure-html5/Data%20Visualizations-1.png" width="624" />
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>election_data</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>stance <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>Stance</span> <span class='op'>==</span> <span class='st'>"Fully denied"</span>, <span class='st'>"Denied"</span>, <span class='st'>"Accepted"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>stance</span> <span class='op'>==</span> <span class='st'>"Accepted"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Elected_or_not</span>, y <span class='op'>=</span> <span class='va'>State_partisan_lean</span>, fill <span class='op'>=</span> <span class='va'>Elected_or_not</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>State_partisan_lean</span>, y <span class='op'>=</span> <span class='va'>Elected_or_not</span>, fill <span class='op'>=</span> <span class='va'>Elected_or_not</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Elecion Deniers: State Partisan Lean vs Election Outcome"</span>, x <span class='op'>=</span> <span class='st'>"Elected or not"</span>, y <span class='op'>=</span> <span class='st'>"State Partisan Lean"</span><span class='op'>)</span></span></code></pre>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Elecion Acceptors: State Partisan Lean vs Election Outcome"</span>, x <span class='op'>=</span> <span class='st'>"Elected or not"</span>, y <span class='op'>=</span> <span class='st'>"State Partisan Lean"</span><span class='op'>)</span></span></code></pre>
 </div>
-<p><img src="index_files/figure-html5/Graph%20Visualizations-2.png" width="624" /></p>
+<p><img src="index_files/figure-html5/Data%20Visualizations-2.png" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

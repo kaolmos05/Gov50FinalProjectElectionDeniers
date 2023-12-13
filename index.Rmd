@@ -19,6 +19,8 @@ I obtained most of the data in my imported data set from FiveThirtyEight's Githu
 
 The key dependent variable is 'Won or Lost their Race' and I manually did the research for all 500+ candidates with Ballotpedia. I looked up whether each candidate in the data set was elected or not in the 2022 general elections. I also did the same for 'Dem or Rep State' is measured with by what president the state went for in the 2020 presidential election. I used CNN's 2020 presidential results (https://www.cnn.com/election/2020/results/president) to find out what president each state went for in 2020. I also added 'The FiveThirtyEight partisan lean of every state' (https://fivethirtyeight.com/features/how-red-or-blue-is-your-state-your-congressional-district/#) as a variable to this data set and it is a continuous variable, with negative values indicating a democratic lean, the smaller the number the greater democratic leaning the state has. Positive values indicated a republican lean with greater numbers indicating a stronger republican lean. I added these variables manually because at the beginning I thought they would be useful for my analysis. 
 
+This study is an observational study because a treatment was not administered, nor was a control group established. I ran a 2 sample permutation test to find whether the difference in proportion of elected Republican candidates was statistically significant based on their stance on the results of the 2020 election. 
+
 ```{r Loading Packages and Data Source(CSV File)}
 #Loading Packages and Data Source(CSV File)
 library(readr)
@@ -68,12 +70,14 @@ mosaic_chart
 ```
 The results from the mosaic bar charts show a difference in the proportion of Republican election deniers candidates that were elected and not elected. In the elected category, there is a higher proportion of election deniers than in the not elected category which raises concerning signs. 
 
+2-sample permutation test
 
-
-I ran a 2-sample permutation test in the chunk below to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results. 
+I ran a 2-sample permutation test in the chunk below to compare the proportion of Republican candidates in the 2022 general elections who denied versus accepted the results of the 2020 election and their electoral success in the 2022 general election. For the purpose of simplifying the categorical variable Stance, I made it a binary variable where if candidates fully denied they were categorized as having denied the results of the 2020 election and every other option was considered accepting because these candidates did not take action to mark the election as illegitimate even if they might have raised concerns, they overall accepted the results or at the very least did not act in a way or indicate that they would act in a way that would prevent the certification of valid election results. 
 
 ```{r Hypothesis Test (2 Sample Permutation Test with Infer)}
 #Hypothesis Test (2 Sample Permutation Test with Infer)
+
+#I created election_prop to find the proportion of Republican candidates elected based on their stance (Denied or Accepted) on the results of the 2020 presidential election.
 election_prop <- election_data |>
   mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
          elected = if_else(Elected_or_not == "Elected", 1, 0),
@@ -83,6 +87,7 @@ election_prop <- election_data |>
 
 knitr::kable(election_prop, col.names = c("Stance", "Prop. of Rep. Candidates Elected"))
 
+#I created election_data_modified to calculate the difference in proportions of elected candidates between the Denied and Accepted stances.
 election_data_modified <- election_data |>
   mutate(partisan_leaning = if_else(State_partisan_lean >= 0, "Conservative Leaning", "Liberal Leaning"),
          elected = if_else(Elected_or_not == "Elected", "1", "0"),
@@ -92,12 +97,14 @@ election_data_modified <- election_data |>
 
 knitr::kable(election_data_modified, col.names = c("Difference in Proportion of Electeds by Stance (Denied prop. - Accepted Prop.)"))
 
+#Set up my hypothesis
 set_hypothesis <- election_data |>
   mutate(elected = if_else(Elected_or_not == "Elected", "1", "0"),
          stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   specify(elected ~ stance, success = "1") |> 
   hypothesize(null = "independence") 
-  
+
+#null distribution of the difference in proportions 
 null_dist <- set_hypothesis |>
   specify(elected ~ stance, success = "1") |> 
   hypothesize(null = "independence") |>
@@ -117,8 +124,13 @@ pval <- null_dist |>
 
 knitr::kable(pval, col.names = "P-value")
 ```
+Results
 
-In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. To control for other independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model. 
+The observed difference in proportion of elected Republican candidates is 0.263513 (denied election - accepted election). The p-value is 0, indicating that the observed difference is statistically significant. Since the p-value is less than alpha = 0.05, there is evidence to reject the null hypothesis that there is no observed difference. It suggests that there is a significant difference in the proportion of elected candidates between the Denied and Accepted stances. However, there are so many confounding variables that could explain this difference in proportion and that's why I run a linear regression in the next step of analysis. 
+
+Linear Regression 
+
+In the chunk below, I ran a regression and modeled it with ggplot. Due to the fact that my dependent and independent variable are categorical, I have coded them to be numerical with the mutate function which results in categorical binary independent and dependent variables. 1 for elected, 0 for not elected, 1 for fully denied the election results of 2020 and 0 for accepted the results of the 2020 election. To control for other confounding independent variables in my data set such as the state, incumbency status, office, and what president the state went for in 2020 I added them as variables in my regression model. 
 
 ```{r Regression}
 regression <- election_data |>
@@ -130,19 +142,23 @@ regression <- election_data |>
          )
 
 regression_fit <- lm(elected ~ stance + President + incumbency + office + state, regression) 
-regression_fit
+summary(regression_fit)
 
-modelsummary::modelsummary(summary(regression_fit))
 p_value <- tidy(regression_fit)$p.value
 p_value
-summary(regression_fit)
-pscl::pR2(regression_fit)["McFadden"]
 
-ggplot(regression, mapping = aes(x = stance, y = elected))  + geom_smooth(method = "lm") + 
+modelsummary::modelsummary(summary(regression_fit),
+                           statistic = c("s.e. = {std.error}",
+                                         "p = {p.value}"),
+                           gof_map = c("nobs", "r.squared", "adj.r.squared"))
+
+
+regression_line <- ggplot(regression, mapping = aes(x = stance, y = elected))  + geom_smooth(method = "lm") + 
   labs(
     x = "Stance (1 = fully denied, 0 = accepted)",
     y = "Elected (1 = elected, 0 = not elected)"
   )
+regression_line
 ```
 Results 
 
@@ -160,6 +176,7 @@ The coefficients for office have different coefficients based on the office but 
 
 
 
+Conclusion 
 
 
 
@@ -171,29 +188,26 @@ The coefficients for office have different coefficients based on the office but 
 
 
 
-
-## Project thoughts
 limitations
 [concede that this system is not perfect bc it is the aggregate of the state and we know that states can be politically fragmented with some urban centers being much more liberal than rural place maybe even use IL as an example]
 
 
-```{r Graph Visualizations}
+```{r Data Visualizations}
 
-
-# Create a boxplot using ggplot and dplyr
+#Bonus Data Visualizations
 election_data |>
   mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   filter(stance == "Denied") |>
-  ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
+  ggplot(aes(x = State_partisan_lean, y = Elected_or_not, fill = Elected_or_not)) +
   geom_boxplot() +
   labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
 
 election_data |>
   mutate(stance = if_else(Stance == "Fully denied", "Denied", "Accepted")) |>
   filter(stance == "Accepted") |>
-  ggplot(aes(x = Elected_or_not, y = State_partisan_lean, fill = Elected_or_not)) +
+  ggplot(aes(x = State_partisan_lean, y = Elected_or_not, fill = Elected_or_not)) +
   geom_boxplot() +
-  labs(title = "Elecion Deniers: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
+  labs(title = "Elecion Acceptors: State Partisan Lean vs Election Outcome", x = "Elected or not", y = "State Partisan Lean")
 
 ```
 
